@@ -2,13 +2,13 @@
 typedef struct {
   int relayPin;
   int sensorPin;
-  long firstSenseTime;
+  bool lastReadingInRange; // we want at least 2 readings in a row before we decide it's positive
   long lastCloseTime;
   long relayCloseDuration;
 } Region;
 
-int numRegions = 3;
-Region regions[] = {{2, A0, 0, 0, 2000}, {4, A1, 0, 0, 2000}, {5, A2, 0, 0, 2000}};
+int numRegions = 4;
+Region regions[] = {{2, A0, false, 0, 2000}, {4, A1, false, 0, 2000}, {5, A2, false, 0, 20000}, {6, A3, false, 0, 2000}};
 
 // Distance sensor voltage ranges we care about
 const int lowVoltageRange = 286;
@@ -16,7 +16,6 @@ const int highVoltageRange = 512;
 
 // Sense within this distance in cm
 const int maxReadDistance = 200;
-const long sensorDuration = 25;
 
 long now;
 int distance;
@@ -41,7 +40,7 @@ void loop() {
     Serial.print(i);
     Serial.print(" Distance: "); Serial.print(distance); Serial.print(" Now: "); Serial.print(now);
     Serial.print(" last close time "); Serial.print(regions[i].lastCloseTime);
-    Serial.print(" first sense time "); Serial.println(regions[i].firstSenseTime);
+    Serial.print(" last reading in range "); Serial.println(regions[i].lastReadingInRange);
 
     // We sensed something in range
     if (distance > 0) {
@@ -52,24 +51,24 @@ void loop() {
         regions[i].lastCloseTime = now;
       }
 
-      // If this is our first in range reading, start our duration measure
-      else if (regions[i].firstSenseTime == 0)  {
-        regions[i].firstSenseTime = now;
+      // If this is our first in range reading, mark that
+      else if (!regions[i].lastReadingInRange)  {
+        regions[i].lastReadingInRange = true;
       }
 
-      // If we've had an in range reading for long enough, close the relay
-      else if (now - regions[i].firstSenseTime > sensorDuration) {
+      // if this is a subsequent in range reading, close the relay
+      else {
         digitalWrite(regions[i].relayPin, LOW);
         regions[i].lastCloseTime = now;
-        regions[i].firstSenseTime = 0;
+        regions[i].lastReadingInRange = false;
         Serial.print("turning on"); Serial.println(i);
       }
     }
 
     // We did not sense anything in range
     else {
-      // Reset our sensor duration measure
-      regions[i].firstSenseTime = 0;
+      // Reset our in range flag
+      regions[i].lastReadingInRange = false;
 
       // Are we in the wait period while the relay is closed?
       if (regions[i].lastCloseTime > 0) {
@@ -87,7 +86,7 @@ void loop() {
         regions[i].lastCloseTime = 0;
       }
     }
-    //delay(5);
+    delay(5);
   }
 }
 
