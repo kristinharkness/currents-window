@@ -43,7 +43,8 @@ void loop() {
   //rainbowFade2White(3,3,1);
   //rainbowCycle(100);
   //rainbow(250);
-  rainbowSlice(100, 90, 180);
+  //rainbowSlice(100, 90, 180); // blue
+  rainbowSlice(100, 170, 255); // red
 
 }
 
@@ -51,7 +52,8 @@ void rainbowSlice(uint8_t wait, byte first, byte last) {
 
   uint16_t i, j;
 
-  for (j = first; j <= last; j++) {
+  for (j = first; j < last; j++) {
+    Serial.println(j);
     for (i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel((i + j) & 255));
     }
@@ -59,7 +61,8 @@ void rainbowSlice(uint8_t wait, byte first, byte last) {
     delay(wait);
   }
 
-  for (j = last; j >= first; j--) {
+  for (j = last; j > first; j--) {
+    Serial.println(j);
     for (i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel((i + j) & 255));
     }
