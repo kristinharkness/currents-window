@@ -13,15 +13,15 @@ typedef struct {
 
 int numRegions = 4;
 Region regions[] = {
-  {2, A0, false, 0, 2000},  // Squidoo / Yellow Submarine
+  {2, A0, false, 0, 5000},  // Squidoo / Yellow Submarine
   {4, A1, false, 0, 2000},  //
   {5, A2, false, 0, 20000}, // Starfish
   {6, A3, false, 0, 2000}   //
 };
 
 // The brain also sets Squidoo's color
-const int squidPin = 9;
-const int squidNumLeds = 30;
+const int squidPin = 3;
+const int squidNumLeds = 27;
 int squidBrightness = 40;
 Adafruit_NeoPixel squid = Adafruit_NeoPixel(squidNumLeds, squidPin, NEO_GRB + NEO_KHZ800);
 
@@ -88,7 +88,8 @@ void loop() {
         Serial.print("turning on"); Serial.println(i);
       }
 
-      if (i == 0) {
+      // If Squidoo is on, change color based on distance
+      if (i == 0 && regions[i].lastCloseTime > 0) {
         doSquidColor(distance);
       }
     }
@@ -135,10 +136,14 @@ int getDistance(int sensorPin) {
 }
 
 void doSquidColor(int distance) {
-  uint32_t newColor = Wheel(map(distance, 0, maxReadDistance, 0, 255));
+
+  uint32_t newColor = Wheel(map(distance, 100, maxReadDistance, 0, 255));
+  Serial.print("Squid color is: "); Serial.println(newColor);
+  
   for (int i = 0; i < squid.numPixels(); i++) {
-    squid.setPixelColor(newColor, 0);
+    squid.setPixelColor(i, newColor);
   }
+  squid.show();
 }
 
 // Input a value 0 to 255 to get a color value.
@@ -155,4 +160,5 @@ uint32_t Wheel(byte WheelPos) {
   WheelPos -= 170;
   return squid.Color(WheelPos * 3, 255 - WheelPos * 3, 0, 0);
 }
+
 
