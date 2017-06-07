@@ -14,7 +14,7 @@ typedef struct {
 int numRegions = 4;
 Region regions[] = {
   {2, A0, false, 0, 5000},  // Squidoo / Yellow Submarine
-  {4, A1, false, 0, 2000},  //
+  {7, A1, false, 0, 10000}, // Crabs
   {5, A2, false, 0, 20000}, // Starfish
   {6, A3, false, 0, 2000}   //
 };
@@ -30,7 +30,7 @@ const int lowVoltageRange = 286;
 const int highVoltageRange = 512;
 
 // Sense within this distance in cm
-const int maxReadDistance = 200;
+const int maxReadDistance = 250;
 
 long now;
 int distance;
