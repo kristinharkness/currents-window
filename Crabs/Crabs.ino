@@ -8,13 +8,13 @@ typedef struct {
   bool increasing;
 } Crab;
 
-Crab blueCrab = {9, 0, 40, 0, true};
+Crab blueCrab = {9, 15, 50, 15, true};
 Servo blueCrabServo;
 
 Crab pinkCrab = {10, 10, 50, 10, true};
 Servo pinkCrabServo;
 
-const int servoDelay = 25; // the shorter the delay the faster the crab moves
+const int servoDelay = 50; // the shorter the delay the faster the crab moves
 
 void setup() {
   Serial.begin(9600);
@@ -23,11 +23,10 @@ void setup() {
 }
 
 void loop() {
-
   blueCrabServo.write(blueCrab.pos);
-  //pinkCrabServo.write(pinkCrab.pos);
+  pinkCrabServo.write(pinkCrab.pos);
   blueCrab = nextCrabPos(blueCrab);
-  //nextCrabPos(pinkCrab);
+  pinkCrab = nextCrabPos(pinkCrab);
   delay(servoDelay);
 }
 
