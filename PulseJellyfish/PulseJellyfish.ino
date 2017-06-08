@@ -47,7 +47,7 @@ void setup() {
 void loop() {
   // Some example procedures showing how to display to the pixels:
 
-  whiteOverRainbow(20,75,5);  
+  whiteOverRainbow(200,75,1);  
 
 }
 
@@ -116,35 +116,6 @@ void rainbowFade2White(uint8_t wait, int rainbowLoops, int whiteLoops) {
     }
   
   }
-
-
-
-  //delay(500);
-
-
-  for(int k = 0 ; k < whiteLoops ; k ++){
-
-    for(int j = 0; j < 256 ; j++){
-
-        for(uint16_t i=0; i < strip.numPixels(); i++) {
-            strip.setPixelColor(i, strip.Color(0,0,0, neopix_gamma[j] ) );
-          }
-          strip.show();
-        }
-
-        delay(2000);
-    for(int j = 255; j >= 0 ; j--){
-
-        for(uint16_t i=0; i < strip.numPixels(); i++) {
-            strip.setPixelColor(i, strip.Color(0,0,0, neopix_gamma[j] ) );
-          }
-          strip.show();
-        }
-  }
-
-  //delay(500);
-
-
 }
 
 void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
@@ -158,7 +129,6 @@ void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
   int loopNum = 0;
 
   static unsigned long lastTime = 0;
-
 
   while(true){
     for(int j=0; j<256; j++) {
