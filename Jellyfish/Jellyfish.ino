@@ -22,27 +22,25 @@ void loop() {
 
   //rainbowSlice(100, 90, 180); // blue
   //rainbowSlice(100, 170, 255); // pink
-  rainbowSlice(100, 0, 15); // orange
+  rainbowSlice(100, 253, 28); // orange
 
 }
 
-void rainbowSlice(uint8_t wait, byte first, byte last) {
+void rainbowSlice(uint8_t wait, byte first, byte count) {
 
-  uint16_t i, j;
+  uint16_t i, j, pixel;
 
-  for (j = first; j < last; j++) {
-    Serial.println(j);
+  for (j = 0; j < strip.numPixels(); j++) {
     for (i = 0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel((i + j) & 255));
-    }
-    strip.show();
-    delay(wait);
-  }
-
-  for (j = last; j > first; j--) {
-    Serial.println(j);
-    for (i = 0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel((i + j) & 255));
+      pixel = i + j;
+      if (pixel >= strip.numPixels()) {
+        pixel = pixel - strip.numPixels();
+      }
+      if (i < count) {
+        strip.setPixelColor(pixel, Wheel((i + first) & 255));
+      } else {
+        strip.setPixelColor(pixel, strip.Color(0, 0, 0, 255 ) );
+      }
     }
     strip.show();
     delay(wait);
