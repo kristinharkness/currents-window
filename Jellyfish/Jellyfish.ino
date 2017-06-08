@@ -7,13 +7,16 @@
 
 #define NUM_LEDS 30
 
-#define BRIGHTNESS 30
+int minBrightness = 10;
+int maxBrightness = 80;
+int brightness = minBrightness;
+bool isBrightening = true;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   Serial.begin(9600);
-  strip.setBrightness(BRIGHTNESS);
+  strip.setBrightness(brightness);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 }
@@ -22,11 +25,11 @@ void loop() {
 
   //rainbowSlice(100, 90, 180); // blue
   //rainbowSlice(100, 170, 255); // pink
-  rainbowSlice(100, 253, 28); // orange
+  rainbowSlice(100, 253, 28, 3); // orange
 
 }
 
-void rainbowSlice(uint8_t wait, byte first, byte count) {
+void rainbowSlice(uint8_t wait, byte first, byte count, byte interval) {
 
   uint16_t i, j, pixel;
 
@@ -42,7 +45,20 @@ void rainbowSlice(uint8_t wait, byte first, byte count) {
         strip.setPixelColor(pixel, strip.Color(0, 0, 0, 255 ) );
       }
     }
+
     strip.show();
+    if (isBrightening) {
+      brightness = brightness + interval;
+      if (brightness >= maxBrightness) {
+        isBrightening = false;
+      }
+    } else {
+      brightness = brightness - interval;
+      if (brightness <= minBrightness) {
+        isBrightening = true;
+      }
+    }
+    strip.setBrightness(brightness);
     delay(wait);
   }
 }
