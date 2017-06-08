@@ -13,7 +13,7 @@ typedef struct {
 
 int numRegions = 4;
 Region regions[] = {
-  {2, A0, false, 0, 5000},  // Squidoo / Yellow Submarine
+  {2, A0, false, 0, 10000},  // Squidoo / Yellow Submarine
   {7, A1, false, 0, 10000}, // Crabs
   {5, A2, false, 0, 20000}, // Starfish
   {6, A3, false, 0, 2000}   //
