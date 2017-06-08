@@ -41,7 +41,7 @@ void rainbowSlice(uint8_t wait, byte first, byte interval) {
       if (pixel >= strip.numPixels()) {
         pixel = pixel - strip.numPixels();
       }
-      if (pixel == drip1 || pixel == drip2 || pixel == drip1 - 1 || pixel == drip2 -1) {
+      if (pixel == drip1 || pixel == drip2 || pixel == drip1 - 1 || pixel == drip2 - 1) {
         strip.setPixelColor(pixel, strip.Color(0, 0, 0, 255 ) );
       } else {
         strip.setPixelColor(pixel, Wheel((i + first) & 255));
@@ -50,17 +50,20 @@ void rainbowSlice(uint8_t wait, byte first, byte interval) {
 
     strip.show();
 
-    drip1--;
-    if (drip1 < 0) {
-      drip1 = 16;
+    if (j % 2 == 0) {
+
+      drip1--;
+      if (drip1 < 0) {
+        drip1 = 16;
+      }
+
+      drip2++;
+      if (drip2 >= 30) {
+        drip2 = 17;
+      }
     }
 
-    drip2++;
-    if (drip2 >= 30) {
-      drip2 = 17;
-    }
-    
-    
+
     if (isBrightening) {
       brightness = brightness + interval;
       if (brightness >= maxBrightness) {
