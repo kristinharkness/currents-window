@@ -11,6 +11,8 @@ int minBrightness = 10;
 int maxBrightness = 80;
 int brightness = minBrightness;
 bool isBrightening = true;
+int drip1 = 16;
+int drip2 = 17;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
@@ -25,11 +27,11 @@ void loop() {
 
   //rainbowSlice(100, 90, 180); // blue
   //rainbowSlice(100, 170, 255); // pink
-  rainbowSlice(100, 253, 28, 3); // orange
+  rainbowSlice(100, 253, 3); // orange
 
 }
 
-void rainbowSlice(uint8_t wait, byte first, byte count, byte interval) {
+void rainbowSlice(uint8_t wait, byte first, byte interval) {
 
   uint16_t i, j, pixel;
 
@@ -39,14 +41,26 @@ void rainbowSlice(uint8_t wait, byte first, byte count, byte interval) {
       if (pixel >= strip.numPixels()) {
         pixel = pixel - strip.numPixels();
       }
-      if (i < count) {
-        strip.setPixelColor(pixel, Wheel((i + first) & 255));
-      } else {
+      if (pixel == drip1 || pixel == drip2 || pixel == drip1 - 1 || pixel == drip2 -1) {
         strip.setPixelColor(pixel, strip.Color(0, 0, 0, 255 ) );
+      } else {
+        strip.setPixelColor(pixel, Wheel((i + first) & 255));
       }
     }
 
     strip.show();
+
+    drip1--;
+    if (drip1 < 0) {
+      drip1 = 16;
+    }
+
+    drip2++;
+    if (drip2 >= 30) {
+      drip2 = 17;
+    }
+    
+    
     if (isBrightening) {
       brightness = brightness + interval;
       if (brightness >= maxBrightness) {
