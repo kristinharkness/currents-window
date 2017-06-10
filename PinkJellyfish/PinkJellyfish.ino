@@ -6,9 +6,15 @@
 #define PIN 9
 
 #define NUM_LEDS 30
+#define MAX_LEDS 90
 
-int minBrightness = 10;
-int maxBrightness = 80;
+const int minBrightness = 10;
+const int maxBrightness = 100;
+const int first = 195;    // The color to start with
+const int pulseSpeed = 3; // how fast the brightness pulses: higher = faster
+const int dripSpeed = 2;  // how fast the drips move: higher
+const int wait = 100;     // how slow the pixels move - higher = slower
+
 int brightness = minBrightness;
 bool isBrightening = true;
 int drip1 = 16;
@@ -20,14 +26,10 @@ void setup() {
   Serial.begin(9600);
   strip.setBrightness(brightness);
   strip.begin();
-  strip.show(); // Initialize all pixels to 'off'
+  colorWipe(strip.Color(0, 0, 0, 255), 0); // White
 }
 
 void loop() {
-  rainbowSlice(100, 195, 3); // orange
-}
-
-void rainbowSlice(uint8_t wait, byte first, byte interval) {
 
   uint16_t i, j, pixel;
 
@@ -38,16 +40,15 @@ void rainbowSlice(uint8_t wait, byte first, byte interval) {
         pixel = pixel - strip.numPixels();
       }
       if (pixel == drip1 || pixel == drip2 || pixel == drip1 - 1 || pixel == drip2 - 1) {
-        strip.setPixelColor(pixel, strip.Color(0, 0, 0, 255 ) );
+        strip.setPixelColor(pixel, strip.Color(0, 0, 0, 255 ));
       } else {
-
         strip.setPixelColor(pixel, Wheel((i + first) & 255));
       }
     }
 
     strip.show();
 
-    if (j % 2 == 0) {
+    if (j % dripSpeed == 0) {
 
       drip1--;
       if (drip1 < 0) {
@@ -60,14 +61,13 @@ void rainbowSlice(uint8_t wait, byte first, byte interval) {
       }
     }
 
-
     if (isBrightening) {
-      brightness = brightness + interval;
+      brightness = brightness + pulseSpeed;
       if (brightness >= maxBrightness) {
         isBrightening = false;
       }
     } else {
-      brightness = brightness - interval;
+      brightness = brightness - pulseSpeed;
       if (brightness <= minBrightness) {
         isBrightening = true;
       }
@@ -79,7 +79,7 @@ void rainbowSlice(uint8_t wait, byte first, byte interval) {
 
 // Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
-  for (uint16_t i = 0; i < strip.numPixels(); i++) {
+  for (uint16_t i = 0; i < MAX_LEDS; i++) {
     strip.setPixelColor(i, c);
     strip.show();
     delay(wait);
